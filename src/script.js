@@ -16,11 +16,19 @@ storage.getAll().then((res) => {
 htmlElements.formElement.addEventListener('submit', createItem);
 htmlElements.itemList.addEventListener('click', deleteItem);
 
+function getHtmlItemTemplate(item) {
+  return `
+  <div class="item" data-id="${item.id}">
+    ${item.text}
+    <button class="delete-button">x</button>
+  </div>`;
+}
+
 function renderAllTask() {
   let htmlString = '';
 
   for (let i = 0; i < items.length; i++) {
-    htmlString += `<div class="item" data-id="${items[i].id}">${items[i].text}</div>`;
+    htmlString += getHtmlItemTemplate(items[i]);
   }
 
   htmlElements.itemList.innerHTML = htmlString;
@@ -36,7 +44,10 @@ function createItem(event) {
   }
 
   storage.create(text).then((res) => {
-    const htmlString = `<div class="item" data-id="${res.id}">${text}</div>`;
+    const htmlString = getHtmlItemTemplate({
+      id: res.id,
+      text: text,
+    });
 
     items.push({
       text: text,
@@ -49,12 +60,24 @@ function createItem(event) {
 }
 
 function deleteItem(event) {
-  const id = event.target.dataset.id;
-  const element = document.querySelector(`[data-id="${id}"]`);
-  element.remove();
+  if (event.target.classList.contains('delete-button') !== true) {
+    return;
+  }
 
-  //   items = items.filter(function (item) {
-  //     return item.id !== id;
-  //   });
-  //   storage.updateItems(items);
+  const id = event.target.parentElement.dataset.id;
+  const element = document.querySelector(`[data-id="${id}"]`);
+
+  document.querySelector('body').style.backgroundColor = 'red';
+
+  storage
+    .delete(id)
+    .then(function () {
+      element.remove();
+    })
+    .catch(function () {
+      alert('Сервер упал!!!');
+    })
+    .finally(function () {
+      document.querySelector('body').style.backgroundColor = null;
+    });
 }

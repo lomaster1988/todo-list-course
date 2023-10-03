@@ -10,6 +10,7 @@ export const storage = {
   create: function (text) {
     return fetch(this.api, {
       method: 'PUT',
+      headers: new Headers({ 'content-type': 'application/json' }),
       body: JSON.stringify({
         text: text,
       }),
@@ -20,14 +21,14 @@ export const storage = {
   delete: function (id) {
     return fetch(this.api, {
       method: 'DELETE',
+      headers: new Headers({ 'content-type': 'application/json' }),
       body: JSON.stringify({ id: id }),
-    }).then((res) => {
-      return res.json();
     });
   },
   update: function (id, text) {
     return fetch(this.api, {
       method: 'PUT',
+      headers: new Headers({ 'content-type': 'application/json' }),
       body: JSON.stringify({
         id: id,
         text: text,

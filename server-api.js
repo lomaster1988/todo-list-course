@@ -6,7 +6,7 @@
  * DELETE => input {id: 1}           output [{text: 'string', id: 1}, ...]
  */
 
-var items = [{ text: 'my first task from server', id: 0 }]; // [{text: string, id: number}]
+var items = [{ text: 'my first task from server', id: '0' }]; // [{text: string, id: number}]
 var taskId = 1;
 
 // eslint-disable-next-line no-undef
@@ -18,7 +18,10 @@ const jsonParser = express.json();
 function resolveCors(res) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
 }
 
 app.use('/items', jsonParser, function (req, res) {
@@ -32,11 +35,13 @@ app.use('/items', jsonParser, function (req, res) {
     case 'PUT': {
       taskId++;
       const newTask = {
-        id: taskId,
+        id: String(taskId),
         text: req.body.text,
       };
+
       items.push(newTask);
       res.json(newTask);
+
       return;
     }
     case 'POST': {
@@ -51,6 +56,7 @@ app.use('/items', jsonParser, function (req, res) {
     }
     case 'DELETE': {
       const filteredTaskList = items.filter((item) => item.id !== req.body.id);
+
       if (items.length !== filteredTaskList.length) {
         items = filteredTaskList;
         res.sendStatus(200);
