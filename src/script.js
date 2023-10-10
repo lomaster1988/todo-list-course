@@ -15,12 +15,14 @@ storage.getAll().then((res) => {
 
 htmlElements.formElement.addEventListener('submit', createItem);
 htmlElements.itemList.addEventListener('click', deleteItem);
+htmlElements.itemList.addEventListener('click', updateItem);
 
 function getHtmlItemTemplate(item) {
   return `
   <div class="item" data-id="${item.id}">
     ${item.text}
-    <button class="delete-button">x</button>
+    <button class="item__update-button">u</button>
+    <button class="item__delete-button">x</button>
   </div>`;
 }
 
@@ -60,14 +62,14 @@ function createItem(event) {
 }
 
 function deleteItem(event) {
-  if (event.target.classList.contains('delete-button') !== true) {
+  if (event.target.classList.contains('item__delete-button') !== true) {
     return;
   }
 
   const id = event.target.parentElement.dataset.id;
   const element = document.querySelector(`[data-id="${id}"]`);
 
-  document.querySelector('body').style.backgroundColor = 'red';
+  event.target.classList.add('item__delete-button--disabled');
 
   storage
     .delete(id)
@@ -78,6 +80,13 @@ function deleteItem(event) {
       alert('Сервер упал!!!');
     })
     .finally(function () {
-      document.querySelector('body').style.backgroundColor = null;
+      event.target.classList.remove('item__delete-button--disabled');
     });
+}
+
+function updateItem(event) {
+  if (event.target.classList.contains('item__update-button') !== true) {
+    return;
+  }
+  console.log('test');
 }
