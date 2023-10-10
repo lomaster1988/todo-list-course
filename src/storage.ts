@@ -1,3 +1,13 @@
+interface Storage {
+  itemsKey: string;
+  idKey: string;
+  api: string;
+  method: string;
+
+  add: (a: number, b: number) => number;
+  getAll: () => Promise<Task[]>;
+}
+
 export const storage = {
   itemsKey: 'todo-items',
   idKey: 'todo-id',
